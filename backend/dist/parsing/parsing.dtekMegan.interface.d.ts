@@ -3,4 +3,5 @@ export interface DataMegan {
     indicationEnergyActive: string;
     indicationEnergyReactiveGeneration: string;
     indicationEnergyReactive: string;
+    invoiceAmount: string;
 }

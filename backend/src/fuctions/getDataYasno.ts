@@ -59,16 +59,16 @@ export const getDataYasno = async (company) => {
   // const d = await s?.evaluate((el) => el.textContent);
   // console.log('D', await s?.evaluate((el) => el.textContent));
   await page.waitForSelector(
-    '.cabinet__wrap > :nth-child(3) > :nth-child(1) > :nth-child(3) ',
+    '.cabinet__wrap > :nth-child(3) > :nth-child(1) > :nth-child(3) '
   );
 
   const buttonExistence = await page.$(
-    '.cabinet__wrap > :nth-child(3) > :nth-child(1) > :nth-child(3)  > :nth-child(2)',
+    '.cabinet__wrap > :nth-child(3) > :nth-child(1) > :nth-child(3)  > :nth-child(2)'
   );
   //console.log('A', buttonExistence);
   if (buttonExistence !== null) {
     await page.click(
-      '.cabinet__wrap > :nth-child(3) > :nth-child(1) > :nth-child(3)  > :nth-child(2)',
+      '.cabinet__wrap > :nth-child(3) > :nth-child(1) > :nth-child(3)  > :nth-child(2)'
     );
     await sleep(30000);
     console.log('A', buttonExistence);
@@ -78,23 +78,23 @@ export const getDataYasno = async (company) => {
   await page.click('.sidebar__nav > :nth-child(2)');
 
   await page.waitForSelector(
-    '.sidebar__nav > :nth-child(2) > .sidebar__nav-sub > :nth-child(1)',
+    '.sidebar__nav > :nth-child(2) > .sidebar__nav-sub > :nth-child(1)'
   );
   await page.click(
-    '.sidebar__nav > :nth-child(2) > .sidebar__nav-sub > :nth-child(1)',
+    '.sidebar__nav > :nth-child(2) > .sidebar__nav-sub > :nth-child(1)'
   );
 
   await page.waitForSelector('#top0 > :nth-child(6)');
   await page.click('#top0 > :nth-child(6)');
 
   const monthSelector = await page.waitForSelector(
-    '.basic-table__body > :nth-child(2) > :nth-child(1)',
+    '.basic-table__body > :nth-child(2) > :nth-child(1)'
   );
   const month = await monthSelector?.evaluate((el) => el.textContent);
   res.date = month;
 
   const dataSelector = await page.waitForSelector(
-    '.basic-table__body > :nth-child(2) > :nth-child(4)',
+    '.basic-table__body > :nth-child(2) > :nth-child(4)'
   );
   const data = await dataSelector?.evaluate((el) => el.textContent);
   res.checkAmount = data.slice(0, 2) + data.slice(3, 10);

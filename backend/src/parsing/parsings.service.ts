@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataOrel } from './parsing.dtekOrel.interface';
 import { DataMegan } from './parsing.dtekMegan.interface';
-import { getDataDtek } from '../fuctions/getDataDtek';
+import { getDataDtek } from 'src/fuctions/getDataDtek';
 import { getDataYasno } from '../fuctions/getDataYasno';
 
 @Injectable()
