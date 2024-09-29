@@ -152,12 +152,8 @@ export function EnteringHousingWorkerCalculationTable({
             </TableCell>
             <Cell value={0} />
             <Cell value={0} />
-            <Cell
-              value={context.indicationPreviousMonth.current.housingWorkerDay}
-            />
-            <Cell
-              value={context.indicationPreviousMonth.current.housingWorkerNight}
-            />
+            <Cell value={context.indicationPreviousMonth.housingWorkerDay} />
+            <Cell value={context.indicationPreviousMonth.housingWorkerNight} />
           </TableRow>
           <TableRow>
             <TableCell

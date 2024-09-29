@@ -5,21 +5,13 @@ import {
   TableContainer,
   Divider,
 } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { PeriodSelect } from '../periodSelect';
 
-import {
-  getIndicationMonth,
-  createRowIndication,
-  changeIndication,
-  getIndicationDtek,
-} from '../../api/indications';
-import { getCheckMonth, createRowCheck, changeCheck } from '../../api/checks';
-import {
-  IndicationInterface,
-  ChangeIndicationInterface,
-} from '../../interfaces/indication';
-import { CheckInterface, ChangeCheckInterface } from '../../interfaces/checks';
+import { changeIndication } from '../../api/indications';
+import { changeCheck } from '../../api/checks';
+import { ChangeIndicationInterface } from '../../interfaces/indication';
+import { ChangeCheckInterface } from '../../interfaces/checks';
 import { useMutation } from '@tanstack/react-query';
 import { useMainPage } from './mainPageContext';
 import { CalculationTable } from '../calculationTable/calculationTable';
@@ -28,11 +20,18 @@ import { EnteringCheckTable } from '../checkTable/enteringCheckTable';
 import { AlertDialog } from '../dialog/dialog';
 import DescriptionAlerts from '../alerts/errorAlert';
 import CustomizedSnackbars from '../alerts/errorAlert2';
-import { v4 as uuidv4 } from 'uuid';
+
 import { PreviousMonth } from '../../functions/previousMonth';
+import {
+  GetIndicatinMonth,
+  GetCheckMonth,
+} from '../../functions/getIndicatinOrCheckMonth';
 
 export const Page = () => {
   const context = useMainPage();
+  const yearStart = context.year;
+  const monthStart = context.month;
+
   const indicationMutation = useMutation({
     mutationFn: changeIndication,
   });
@@ -41,11 +40,11 @@ export const Page = () => {
   });
 
   useEffect(() => {
-    // console.log('Изменение месяца или года');
+    // console.log('Изменение месяца или года', context.year, context.month);
     if (
       context.firstOpeningDialogue ||
-      String(context.year) !== context.yearStart ||
-      String(context.month) !== context.monthStart
+      String(context.year) !== yearStart ||
+      String(context.month) !== monthStart
     ) {
       context.setFirstOpeningDialogue(true);
       context.show('При изменении периода внесенные изменения будут потеряны.');
@@ -54,28 +53,10 @@ export const Page = () => {
   useEffect(() => {
     // console.log('Изменение видимости');
     if (!context.visibleDialog) {
-      const indications = getIndicationMonth({
-        year: context.year,
-        month: context.month,
-      });
+      const indications = GetIndicatinMonth(context.year, context.month);
+
       indications.then((indication) => {
-        if (indication.data[0]) {
-          context.setIndicationMonth(indication.data[0]);
-        } else {
-          const newIndicationMonth: IndicationInterface = {
-            id: uuidv4(),
-            monthId: context.month,
-            yearId: context.year,
-            orelDay: 0,
-            orelNight: 0,
-            minerDay: 0,
-            minerNight: 0,
-            housingWorkerDay: 0,
-            housingWorkerNight: 0,
-          };
-          createRowIndication({ dataIndication: newIndicationMonth });
-          context.setIndicationMonth(newIndicationMonth);
-        }
+        context.setIndicationMonth(indication);
       });
 
       const previous = PreviousMonth(
@@ -83,37 +64,19 @@ export const Page = () => {
         Number(context.year)
       );
 
-      const indicationsPrevious = getIndicationMonth({
-        year: previous.previousYear,
-        month: previous.previousMonth,
-      });
+      const indicationsPrevious = GetIndicatinMonth(
+        previous.previousYear,
+        previous.previousMonth
+      );
+
       indicationsPrevious.then((indication) => {
-        if (indication.data[0]) {
-          context.indicationPreviousMonth.current = indication.data[0];
-        }
+        context.setIndicationPreviousMonth(indication);
       });
 
-      const checks = getCheckMonth({
-        year: context.year,
-        month: context.month,
-      });
+      const checks = GetCheckMonth(context.year, context.month);
+
       checks.then((check) => {
-        if (check.data[0]) {
-          context.setCheckMonth(check.data[0]);
-        } else {
-          const newCheckMonth: CheckInterface = {
-            id: uuidv4(),
-            monthId: context.month,
-            yearId: context.year,
-            checkSpentDay: 0,
-            checkSpentNight: 0,
-            priceDay: 0,
-            priceNight: 0,
-            invoiceAmount: 0,
-          };
-          createRowCheck({ dataCheck: newCheckMonth });
-          context.setCheckMonth(newCheckMonth);
-        }
+        context.setCheckMonth(check);
       });
     }
   }, [context.visibleDialog]);
@@ -186,7 +149,7 @@ export const Page = () => {
         <Typography variant="h5" component="h2">
           Таблица для ввода показаний за{' '}
           {context.months[Number(context.month) - 1].title}{' '}
-          {context.years[Number(context.year) - 1].title} года
+          {context.years[Number(context.year) - 1].title} года.
         </Typography>
 
         <EnteringMeterReadingsTable />
@@ -197,7 +160,6 @@ export const Page = () => {
           {context.months[Number(context.month) - 1].title}{' '}
           {context.years[Number(context.year) - 1].title} года
         </Typography>
-
         <EnteringCheckTable />
       </TableContainer>
 
