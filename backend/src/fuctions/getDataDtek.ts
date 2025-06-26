@@ -32,7 +32,7 @@ export const getDataDtek = async (company: string) => {
   //{ headless: false }
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
-  await page.goto('https://okenergy.com.ua/');
+  await page.goto('https://ok.dtek-dnem.com.ua/');
 
   const buttonSelect = await page.$$('.login-Kem__tabs > button');
 
@@ -46,13 +46,18 @@ export const getDataDtek = async (company: string) => {
   await page.type('.entry__form > :nth-child(2) > input', password, {
     delay: 100,
   });
-  await page.click('.entry__form > :nth-child(4)');
 
+  await page.click('.entry__form > :nth-child(4)');
+  //await sleep(10000);
+  const textSelector = await page.waitForSelector(
+    '.indicators-ent__form > :nth-child(4) > .basic-table > .basic-table__body > tr > td > div > :nth-child(2)'
+  );
   const buttonTextSelector = await page.waitForSelector(
     '.indicators-ent__form > :nth-child(5)'
   );
 
   const buttonText = await buttonTextSelector?.evaluate((el) => el.textContent);
+
   if (buttonText === 'Розрахувати') {
     await page.waitForSelector('.indicators-ent__form > :nth-child(5)');
     await page.click('.indicators-ent__form > :nth-child(5)');
