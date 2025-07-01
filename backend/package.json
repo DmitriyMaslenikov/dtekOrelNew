@@ -30,6 +30,7 @@
     "@nestjsx/crud-typeorm": "^5.0.0-alpha.3",
     "decimal.js": "^10.4.3",
     "lodash.uniq": "^4.5.0",
+    "mqtt": "^5.5.2",
     "pg": "^8.11.0",
     "puppeteer": "^22.0.0",
     "reflect-metadata": "^0.1.13",

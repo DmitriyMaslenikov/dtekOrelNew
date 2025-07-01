@@ -17,6 +17,7 @@ import { TotalPaymentAmountsInterface } from '../../interfaces/totalPaymentAmoun
 import { useMainPage } from '../mainPage/mainPageContext';
 
 import { useReactToPrint } from 'react-to-print';
+import { log } from 'console';
 
 export function EnteringMinerCalculationTable({
   consumption,
@@ -153,8 +154,8 @@ export function EnteringMinerCalculationTable({
             </TableCell>
             <Cell value={0} />
             <Cell value={0} />
-            <Cell value={context.indicationPreviousMonth.current.minerDay} />
-            <Cell value={context.indicationPreviousMonth.current.minerNight} />
+            <Cell value={context.indicationPreviousMonth.minerDay} />
+            <Cell value={context.indicationPreviousMonth.minerNight} />
           </TableRow>
           <TableRow>
             <TableCell

@@ -16,7 +16,7 @@ export function CalculationTable() {
 
   const consumption = ConsumptionCalculation(
     context.indicationMonth,
-    context.indicationPreviousMonth.current
+    context.indicationPreviousMonth
   );
 
   const losses = LossesCalculation(consumption, context.checkMonth);

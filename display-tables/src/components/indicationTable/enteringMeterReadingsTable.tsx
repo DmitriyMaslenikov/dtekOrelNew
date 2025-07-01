@@ -15,6 +15,7 @@ import { getIndicationDtek } from '../../api/indications';
 import { IndicationDtekDialog } from '../dialog/indicationDtekDialog';
 
 export function EnteringMeterReadingsTable() {
+  // console.log('Изменение записи');
   const context = useMainPage();
   const [visibleDialog, setVisibleDialog] = useState(false);
   const [data, setData] = useState({
@@ -22,6 +23,7 @@ export function EnteringMeterReadingsTable() {
     indicationDay: '',
     indicationNight: '',
   });
+
   useEffect(() => {
     setOrelDay(Number(context.indicationMonth.orelDay));
     setOrelNight(Number(context.indicationMonth.orelNight));
@@ -75,8 +77,8 @@ export function EnteringMeterReadingsTable() {
     setVisibleDialog(false);
   };
   const SaveIndicatin = () => {
-    setOrelDay(data.indicationDay);
-    setOrelNight(data.indicationNight);
+    setOrelDay(Number(data.indicationDay));
+    setOrelNight(Number(data.indicationNight));
     setVisibleDialog(false);
   };
 

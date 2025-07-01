@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDataDtek = void 0;
 const puppeteer_1 = require("puppeteer");
 const getDataDtek = async (company) => {
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     let resOrel = {
         date: undefined,
         indicationDay: undefined,
@@ -13,6 +14,7 @@ const getDataDtek = async (company) => {
         indicationEnergyActive: undefined,
         indicationEnergyReactiveGeneration: undefined,
         indicationEnergyReactive: undefined,
+        invoiceAmount: undefined,
     };
     let contractualAccount;
     let password;
@@ -28,7 +30,7 @@ const getDataDtek = async (company) => {
     }
     const browser = await puppeteer_1.default.launch({ headless: false });
     const page = await browser.newPage();
-    await page.goto('https://okenergy.com.ua/');
+    await page.goto('https://ok.dtek-dnem.com.ua/');
     const buttonSelect = await page.$$('.login-Kem__tabs > button');
     await buttonSelect[1].click();
     await page.waitForSelector('.login__form-input');
@@ -39,6 +41,7 @@ const getDataDtek = async (company) => {
         delay: 100,
     });
     await page.click('.entry__form > :nth-child(4)');
+    const textSelector = await page.waitForSelector('.indicators-ent__form > :nth-child(4) > .basic-table > .basic-table__body > tr > td > div > :nth-child(2)');
     const buttonTextSelector = await page.waitForSelector('.indicators-ent__form > :nth-child(5)');
     const buttonText = await buttonTextSelector?.evaluate((el) => el.textContent);
     if (buttonText === 'Розрахувати') {
@@ -73,6 +76,27 @@ const getDataDtek = async (company) => {
         const indicationEnergyReactiveGeneration = await indicationEnergyReactiveGenerationSelector?.evaluate((el) => el.textContent);
         resMegan.indicationEnergyReactiveGeneration =
             indicationEnergyReactiveGeneration.slice(0, 5);
+        await page.waitForSelector('.sidebar-Kem__nav > :nth-child(3)');
+        await page.click('.sidebar-Kem__nav > :nth-child(3)');
+        await page.waitForSelector('.sidebar-Kem__nav > :nth-child(3) > .sidebar-Kem__nav-sub > :nth-child(1)');
+        await page.click('.sidebar-Kem__nav > :nth-child(3) > .sidebar-Kem__nav-sub > :nth-child(1)');
+        await page.waitForSelector('#top0 > :nth-child(6)');
+        await page.click('#top0 > :nth-child(6)');
+        const invoiceAmountSelector = await page.waitForSelector('.basic-table__body > :nth-child(4)  > :nth-child(4) ');
+        const invoiceAmount = await invoiceAmountSelector?.evaluate((el) => el.textContent);
+        resMegan.invoiceAmount = invoiceAmount;
+        await page.waitForSelector('.month-info-m > :nth-child(4)  > :nth-child(3)');
+        await page.click('.month-info-m > :nth-child(4)  > :nth-child(3)');
+        await page.setRequestInterception(true);
+        page.on('request', (interceptedRequest) => {
+            if (interceptedRequest.isInterceptResolutionHandled())
+                return;
+            interceptedRequest.continue();
+        });
+        page.on('requestfinished', (interceptedRequestFinished) => {
+            if (interceptedRequestFinished.url().endsWith('services/ocsp/')) {
+            }
+        });
         return resMegan;
     }
     return resOrel;
